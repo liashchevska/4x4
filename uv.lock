@@ -59,6 +59,8 @@ source = { virtual = "." }
 dependencies = [
     { name = "alembic" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "pydantic" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "sqlalchemy" },
 ]
@@ -67,6 +69,8 @@ dependencies = [
 requires-dist = [
     { name = "alembic", specifier = ">=1.18.5" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.139.2" },
+    { name = "pydantic", specifier = ">=2.13.4" },
+    { name = "pydantic-settings", specifier = ">=2.14.2" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "sqlalchemy", specifier = ">=2.0.51" },
 ]
