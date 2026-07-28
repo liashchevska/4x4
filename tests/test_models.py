@@ -38,3 +38,17 @@ def test_add_word_to_group(session, group):
     retrieved_word = session.get(Word, word.id)
     assert retrieved_word is not None
     assert retrieved_word.group_id == group.id
+
+
+def test_groups_and_words_deleted_along_with_puzzle(session, puzzle, group):
+    """Ensure deleting a puzzle removes its groups and words."""
+
+    word = Word(text="Cat")
+    group.words.append(word)
+    session.commit()
+
+    session.delete(puzzle)
+    session.commit()
+
+    assert session.get(Group, group.id) is None
+    assert session.get(Word, word.id) is None

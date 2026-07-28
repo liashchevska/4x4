@@ -12,7 +12,9 @@ class Puzzle(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=lambda: datetime.now(UTC)
     )
-    groups: Mapped[list["Group"]] = relationship(back_populates="puzzle")
+    groups: Mapped[list["Group"]] = relationship(
+        back_populates="puzzle", cascade="all, delete-orphan"
+    )
 
 
 class Group(Base):
@@ -22,7 +24,9 @@ class Group(Base):
     puzzle_id: Mapped[UUID] = mapped_column(ForeignKey("puzzles.id"), nullable=False)
     puzzle: Mapped["Puzzle"] = relationship(back_populates="groups")
     description: Mapped[str] = mapped_column(String(255), nullable=False)
-    words: Mapped[list["Word"]] = relationship(back_populates="group")
+    words: Mapped[list["Word"]] = relationship(
+        back_populates="group", cascade="all, delete-orphan"
+    )
 
 
 class Word(Base):
