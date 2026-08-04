@@ -20,3 +20,10 @@ wheels/
 
 # IDEs
 .vscode/
+
+# pytest & coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
