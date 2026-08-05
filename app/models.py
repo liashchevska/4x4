@@ -1,5 +1,6 @@
 from app.database import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.schemas import PuzzleCreate
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from uuid import UUID, uuid4
 from sqlalchemy import DateTime, ForeignKey, Uuid, String
 from datetime import UTC, datetime
@@ -15,6 +16,24 @@ class Puzzle(Base):
     groups: Mapped[list["Group"]] = relationship(
         back_populates="puzzle", cascade="all, delete-orphan"
     )
+
+    @classmethod
+    def create(cls, session: Session, *, data: PuzzleCreate) -> "Puzzle":
+        """Create a new Puzzle instance along with its associated Groups and Words."""
+        _words = lambda words: [Word(text=word) for word in words]
+        groups = [
+            Group(
+                description=group.description,
+                words=_words(group.words),
+            )
+            for group in data.groups
+        ]
+
+        puzzle = cls(groups=groups)
+        session.add(puzzle)
+        session.flush()
+
+        return puzzle
 
 
 class Group(Base):

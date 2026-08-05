@@ -1,5 +1,8 @@
 import pytest
+from sqlalchemy import select, func
 from app.models import Group, Puzzle, Word
+from app.schemas import PuzzleCreate
+from tests.factories import make_puzzle
 
 
 @pytest.fixture
@@ -52,3 +55,17 @@ def test_groups_and_words_deleted_along_with_puzzle(session, puzzle, group):
 
     assert session.get(Group, group.id) is None
     assert session.get(Word, word.id) is None
+
+
+def test_create_puzzle_creates_groups_and_words(session):
+    """Test that Puzzle.create method creates Words, Groups along with Puzzle."""
+    group_count, word_count = 4, 4
+    data = make_puzzle(group_count, word_count)
+
+    puzzle = Puzzle.create(session, data=PuzzleCreate(groups=data))
+
+    stmt = select(func.count(Group.id)).where(Group.puzzle_id == puzzle.id)
+    assert session.scalar(stmt) == group_count
+
+    stmt = select(func.count(Word.id)).join(Group).where(Group.puzzle_id == puzzle.id)
+    assert session.scalar(stmt) == group_count * word_count
