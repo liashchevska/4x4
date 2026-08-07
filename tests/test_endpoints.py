@@ -1,6 +1,7 @@
 from app.models import Puzzle
-from uuid import UUID
+from uuid import UUID, uuid4
 from factories import PUZZLE_PAYLOAD_VALID, PUZZLE_PAYLOAD_INVALID
+
 
 def test_create_puzzle_valid_data(client, session):
     response = client.post(url="/puzzles/", json=PUZZLE_PAYLOAD_VALID)
@@ -16,3 +17,19 @@ def test_create_puzzle_valid_data(client, session):
 def test_create_puzzle_invalid_data(client):
     response = client.post(url="/puzzles/", json=PUZZLE_PAYLOAD_INVALID)
     assert response.status_code == 422
+
+
+def test_retrieve_puzzle_valid_id(client, puzzle):
+    response = client.get(f"/puzzles/{puzzle.id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert "words" in data
+    assert "groups" not in data
+
+
+def test_retrieve_puzzle_invalid_id(client):
+    non_existent_id = uuid4()
+    response = client.get(f"/puzzles/{non_existent_id}")
+
+    assert response.status_code == 404
