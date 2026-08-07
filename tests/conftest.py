@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 from app.database import Base, get_session
 from app.main import app
+from app.models import Puzzle
+from app.schemas import PuzzleCreate
 from fastapi.testclient import TestClient
+from factories import PUZZLE_PAYLOAD_VALID
 
 
 @pytest.fixture(scope="session")
@@ -45,3 +48,13 @@ def client(engine):
         yield client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def puzzle(session):
+    puzzle = Puzzle.create(
+        session,
+        data=PuzzleCreate(groups=PUZZLE_PAYLOAD_VALID["groups"]),
+    )
+    session.commit()
+    return puzzle
