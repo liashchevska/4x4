@@ -69,3 +69,11 @@ def test_create_puzzle_creates_groups_and_words(session):
 
     stmt = select(func.count(Word.id)).join(Group).where(Group.puzzle_id == puzzle.id)
     assert session.scalar(stmt) == group_count * word_count
+
+
+def test_words_property(session):
+    group_count, word_count = 4, 4
+    data = make_puzzle(group_count, word_count)
+
+    puzzle = Puzzle.create(session, data=PuzzleCreate(groups=data))
+    assert len(puzzle.words) == group_count * word_count

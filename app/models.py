@@ -17,6 +17,10 @@ class Puzzle(Base):
         back_populates="puzzle", cascade="all, delete-orphan"
     )
 
+    @property
+    def words(self) -> list["Word"]:
+        return [word for group in self.groups for word in group.words]
+
     @classmethod
     def create(cls, session: Session, *, data: PuzzleCreate) -> "Puzzle":
         """Create a new Puzzle instance along with its associated Groups and Words."""
