@@ -34,9 +34,10 @@ def session(engine):
 
 
 @pytest.fixture
-def client(session):
+def client(engine):
     def override_get_session():
-        yield session
+        with Session(bind=engine) as session:
+            yield session
 
     app.dependency_overrides[get_session] = override_get_session
 
