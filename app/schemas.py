@@ -6,7 +6,7 @@ from app.utils import is_unique
 
 
 class GroupCreate(BaseModel):
-    description: str
+    title: str
     # Each group has 4 words.
     words: Annotated[list[str], Field(min_length=4, max_length=4)]
 
@@ -15,9 +15,9 @@ class PuzzleCreate(BaseModel):
     groups: Annotated[list[GroupCreate], Field(min_length=4, max_length=4)]
 
     @model_validator(mode="after")
-    def validate_description_uniqueness(self) -> Self:
-        if not is_unique([group.description for group in self.groups]):
-            raise ValueError("Group descriptions must be unique.")
+    def validate_title_uniqueness(self) -> Self:
+        if not is_unique([group.title for group in self.groups]):
+            raise ValueError("Group titles must be unique.")
         return self
 
     @model_validator(mode="after")

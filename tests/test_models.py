@@ -15,7 +15,7 @@ def puzzle(session):
 
 @pytest.fixture
 def group(session, puzzle):
-    group = Group(description="Mammals", puzzle=puzzle)
+    group = Group(title="Mammals", puzzle=puzzle)
     session.add(group)
     session.flush()
     return group

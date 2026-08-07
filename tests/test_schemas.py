@@ -26,7 +26,7 @@ def test_puzzle_rejects_non_unique_words():
         PuzzleCreate(groups=make_puzzle(4, 4, duplicate_words=True))
 
 
-def test_puzzle_rejects_non_unique_group_descriptions():
-    """Descriptions must be unique across the puzzle."""
-    with pytest.raises(ValidationError, match="Group descriptions must be unique"):
-        PuzzleCreate(groups=make_puzzle(4, 4, duplicate_description=True))
+def test_puzzle_rejects_non_unique_group_titles():
+    """Titles must be unique across the puzzle."""
+    with pytest.raises(ValidationError, match="Group titles must be unique"):
+        PuzzleCreate(groups=make_puzzle(4, 4, duplicate_title=True))

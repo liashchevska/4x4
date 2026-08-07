@@ -27,7 +27,7 @@ class Puzzle(Base):
         _words = lambda words: [Word(text=word) for word in words]
         groups = [
             Group(
-                description=group.description,
+                title=group.title,
                 words=_words(group.words),
             )
             for group in data.groups
@@ -46,7 +46,7 @@ class Group(Base):
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     puzzle_id: Mapped[UUID] = mapped_column(ForeignKey("puzzles.id"), nullable=False)
     puzzle: Mapped["Puzzle"] = relationship(back_populates="groups")
-    description: Mapped[str] = mapped_column(String(255), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
     words: Mapped[list["Word"]] = relationship(
         back_populates="group", cascade="all, delete-orphan"
     )
