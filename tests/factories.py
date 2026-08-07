@@ -1,3 +1,21 @@
+PUZZLE_PAYLOAD_VALID = {
+    "groups": [
+        {"description": "Fruits", "words": ["banana", "apple", "orange", "grape"]},
+        {"description": "Colors", "words": ["red", "blue", "green", "yellow"]},
+        {"description": "Animals", "words": ["cat", "dog", "bird", "fish"]},
+        {"description": "Planets", "words": ["mercury", "venus", "earth", "mars"]},
+    ]
+}
+
+PUZZLE_PAYLOAD_INVALID = {
+    "groups": [
+        {"description": "Fruits", "words": ["banana", "apple", "orange", "grape"]},
+        {"description": "Colors", "words": ["red", "blue", "green", "yellow"]},
+        {"description": "Planets", "words": ["mercury", "venus", "earth", "mars"]},
+    ]
+}
+
+
 def make_group(group_name: int, word_count: int) -> dict:
     return {
         "description": f"Group {group_name}",

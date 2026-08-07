@@ -1,23 +1,6 @@
 from app.models import Puzzle
 from uuid import UUID
-
-PUZZLE_PAYLOAD_VALID = {
-    "groups": [
-        {"description": "Fruits", "words": ["banana", "apple", "orange", "grape"]},
-        {"description": "Colors", "words": ["red", "blue", "green", "yellow"]},
-        {"description": "Animals", "words": ["cat", "dog", "bird", "fish"]},
-        {"description": "Planets", "words": ["mercury", "venus", "earth", "mars"]},
-    ]
-}
-
-PUZZLE_PAYLOAD_INVALID = {
-    "groups": [
-        {"description": "Fruits", "words": ["banana", "apple", "orange", "grape"]},
-        {"description": "Colors", "words": ["red", "blue", "green", "yellow"]},
-        {"description": "Planets", "words": ["mercury", "venus", "earth", "mars"]},
-    ]
-}
-
+from factories import PUZZLE_PAYLOAD_VALID, PUZZLE_PAYLOAD_INVALID
 
 def test_create_puzzle_valid_data(client, session):
     response = client.post(url="/puzzles/", json=PUZZLE_PAYLOAD_VALID)
