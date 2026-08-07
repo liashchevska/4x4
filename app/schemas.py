@@ -27,6 +27,15 @@ class PuzzleCreate(BaseModel):
         return self
 
 
+class PuzzleCreateResponse(BaseModel):
+    id: UUID
+
+
+class WordRetrieve(BaseModel):
+    id: UUID
+    text: str
+
+
 class PuzzleRetrieve(BaseModel):
     id: UUID
-    words: list[str]
+    words: list[WordRetrieve]
