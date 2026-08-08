@@ -32,7 +32,7 @@ class PuzzleCreateResponse(BaseModel):
 
 
 class WordRetrieve(BaseModel):
-    id: UUID
+    id: int
     text: str
 
 

@@ -43,7 +43,7 @@ class Puzzle(Base):
 class Group(Base):
     __tablename__ = "groups"
 
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    id: Mapped[int] = mapped_column(primary_key=True)
     puzzle_id: Mapped[UUID] = mapped_column(ForeignKey("puzzles.id"), nullable=False)
     puzzle: Mapped["Puzzle"] = relationship(back_populates="groups")
     title: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -55,7 +55,7 @@ class Group(Base):
 class Word(Base):
     __tablename__ = "words"
 
-    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
-    group_id: Mapped[UUID] = mapped_column(ForeignKey("groups.id"), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    group_id: Mapped[int] = mapped_column(ForeignKey("groups.id"), nullable=False)
     group: Mapped["Group"] = relationship(back_populates="words")
     text: Mapped[str] = mapped_column(String(255), nullable=False)
