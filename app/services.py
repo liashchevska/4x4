@@ -3,10 +3,7 @@ from app.models import Puzzle, Group
 from app.schemas import PuzzleCreate
 from uuid import UUID
 from sqlalchemy import select
-
-
-class PuzzleDoesNotExist(Exception):
-    pass
+from app.exceptions import PuzzleDoesNotExist
 
 
 def create_puzzle_service(session: Session, payload: PuzzleCreate) -> Puzzle:

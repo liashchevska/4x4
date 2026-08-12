@@ -1,12 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
-from app.models import Puzzle
+from fastapi import APIRouter
 from app.schemas import PuzzleCreate, PuzzleCreateResponse, PuzzleRead
 from app.dependencies import SessionDependency
 from uuid import UUID
 from app.services import (
     create_puzzle_service,
     retrieve_puzzle_service,
-    PuzzleDoesNotExist,
 )
 
 router = APIRouter(prefix="/puzzles", tags=["puzzles"])
@@ -20,10 +18,4 @@ def create_puzzle(payload: PuzzleCreate, session: SessionDependency) -> PuzzleCr
 
 @router.get(path="/{puzzle_id}", response_model=PuzzleRead)
 def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency) -> PuzzleRead:
-    try:
-        puzzle = retrieve_puzzle_service(session, puzzle_id)
-    except PuzzleDoesNotExist:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Puzzle not found"
-        )
-    return puzzle
+    return retrieve_puzzle_service(session, puzzle_id)

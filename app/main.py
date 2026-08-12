@@ -1,13 +1,9 @@
-from typing import Annotated
-from fastapi import Depends, FastAPI
-from .database import Session, get_session
+from fastapi import FastAPI
 
-SessionDep = Annotated[Session, Depends(get_session)]
-
+from app.exceptions import PuzzleDoesNotExist, puzzle_does_not_exist_exception_handler
+from app.routes import router
 
 app = FastAPI()
 
-
-@app.get("/")
-async def root():
-    return "Nothing here yet!"
+app.add_exception_handler(PuzzleDoesNotExist, puzzle_does_not_exist_exception_handler)
+app.include_router(router)
