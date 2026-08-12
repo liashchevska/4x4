@@ -99,3 +99,24 @@ def test_group_guess_incorrect(puzzle):
     guess = [puzzle.groups[i].words[i].id for i in range(4)]
 
     assert group.guess(guess) == GuessResult.INCORRECT
+
+
+def test_puzzle_guess_correct(puzzle):
+    group = puzzle.groups[0]
+    guess = [word.id for word in group.words]
+
+    assert puzzle.guess(guess) == (GuessResult.CORRECT, group.title)
+
+
+def test_puzzle_guess_oneaway(puzzle):
+    group = puzzle.groups[0]
+    guess = [word.id for word in group.words]
+    guess[0] = puzzle.groups[1].words[0].id
+
+    assert puzzle.guess(guess) == (GuessResult.ONEAWAY, None)
+
+
+def test_puzzle_guess_incorrect(puzzle):
+    guess = [puzzle.groups[i].words[i].id for i in range(4)]
+
+    assert puzzle.guess(guess) == (GuessResult.INCORRECT, None)

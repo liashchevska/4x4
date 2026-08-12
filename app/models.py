@@ -52,6 +52,16 @@ class Puzzle(Base):
 
         return puzzle
 
+    def guess(self, guess: list[int]) -> tuple[GuessResult, str | None]:
+        for group in self.groups:
+            group_result = group.guess(guess)
+
+            if group_result != GuessResult.INCORRECT:
+                title = group.title if group_result == GuessResult.CORRECT else None
+                return group_result, title
+
+        return group_result, None
+
 
 class Group(Base):
     __tablename__ = "groups"
