@@ -1,6 +1,6 @@
 import pytest
 from sqlalchemy import select, func
-from app.models import Group, Puzzle, Word
+from app.models import Group, Puzzle, Word, GuessResult
 from app.schemas import PuzzleCreate
 from tests.factories import make_puzzle
 
@@ -77,3 +77,25 @@ def test_words_property(session):
 
     puzzle = Puzzle.create(session, data=PuzzleCreate(groups=data))
     assert len(puzzle.words) == group_count * word_count
+
+
+def test_group_guess_correct(puzzle):
+    group = puzzle.groups[0]
+    guess = [word.id for word in group.words]
+
+    assert group.guess(guess) == GuessResult.CORRECT
+
+
+def test_group_guess_oneaway(puzzle):
+    group = puzzle.groups[0]
+    guess = [word.id for word in group.words]
+    guess[0] = puzzle.groups[1].words[0].id
+
+    assert group.guess(guess) == GuessResult.ONEAWAY
+
+
+def test_group_guess_incorrect(puzzle):
+    group = puzzle.groups[0]
+    guess = [puzzle.groups[i].words[i].id for i in range(4)]
+
+    assert group.guess(guess) == GuessResult.INCORRECT

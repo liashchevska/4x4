@@ -4,6 +4,19 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from uuid import UUID, uuid4
 from sqlalchemy import DateTime, ForeignKey, Uuid, String
 from datetime import UTC, datetime
+from enum import Enum
+
+WORDS_PER_GROUP = 4
+
+
+class GuessResult(Enum):
+    INCORRECT = 0
+    CORRECT = WORDS_PER_GROUP
+    ONEAWAY = WORDS_PER_GROUP - 1
+
+    @classmethod
+    def _missing_(cls, value):
+        return cls.INCORRECT
 
 
 class Puzzle(Base):
@@ -50,6 +63,11 @@ class Group(Base):
     words: Mapped[list["Word"]] = relationship(
         back_populates="group", cascade="all, delete-orphan"
     )
+
+    def guess(self, guess: list[int]) -> GuessResult:
+        ingroup = {word.id for word in self.words}
+        matched = len(ingroup & set(guess))
+        return GuessResult(matched)
 
 
 class Word(Base):
