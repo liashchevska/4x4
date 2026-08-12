@@ -31,11 +31,11 @@ class PuzzleCreateResponse(BaseModel):
     id: UUID
 
 
-class WordRetrieve(BaseModel):
+class WordRead(BaseModel):
     id: int
     text: str
 
 
-class PuzzleRetrieve(BaseModel):
+class PuzzleRead(BaseModel):
     id: UUID
-    words: list[WordRetrieve]
+    words: list[WordRead]

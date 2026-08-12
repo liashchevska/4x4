@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from app.models import Puzzle
-from app.schemas import PuzzleCreate, PuzzleCreateResponse, PuzzleRetrieve
+from app.schemas import PuzzleCreate, PuzzleCreateResponse, PuzzleRead
 from app.dependencies import SessionDependency
 from uuid import UUID
 from app.services import (
@@ -18,8 +18,8 @@ def create_puzzle(payload: PuzzleCreate, session: SessionDependency) -> PuzzleCr
     return PuzzleCreateResponse(id=puzzle.id)
 
 
-@router.get(path="/{puzzle_id}", response_model=PuzzleRetrieve)
-def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency) -> PuzzleRetrieve:
+@router.get(path="/{puzzle_id}", response_model=PuzzleRead)
+def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency) -> PuzzleRead:
     try:
         puzzle = retrieve_puzzle_service(session, puzzle_id)
     except PuzzleDoesNotExist:
