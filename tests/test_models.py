@@ -105,7 +105,7 @@ def test_puzzle_guess_correct(puzzle):
     group = puzzle.groups[0]
     guess = [word.id for word in group.words]
 
-    assert puzzle.guess(guess) == (GuessResult.CORRECT, group.title)
+    assert puzzle.guess(guess) == (GuessResult.CORRECT, group)
 
 
 def test_puzzle_guess_oneaway(puzzle):

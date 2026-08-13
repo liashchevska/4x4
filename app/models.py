@@ -52,13 +52,12 @@ class Puzzle(Base):
 
         return puzzle
 
-    def guess(self, guess: list[int]) -> tuple[GuessResult, str | None]:
+    def guess(self, guess: list[int]) -> tuple[GuessResult, Group | None]:
         for group in self.groups:
             group_result = group.guess(guess)
 
             if group_result != GuessResult.INCORRECT:
-                title = group.title if group_result == GuessResult.CORRECT else None
-                return group_result, title
+                return group_result, group if group_result == GuessResult.CORRECT else None
 
         return group_result, None
 
