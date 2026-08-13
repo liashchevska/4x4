@@ -1,5 +1,5 @@
+from __future__ import annotations
 from app.database import Base
-from app.schemas import PuzzleCreate
 from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from uuid import UUID, uuid4
 from sqlalchemy import DateTime, ForeignKey, Uuid, String
@@ -35,15 +35,15 @@ class Puzzle(Base):
         return [word for group in self.groups for word in group.words]
 
     @classmethod
-    def create(cls, session: Session, *, data: PuzzleCreate) -> "Puzzle":
+    def create(cls, session: Session, *, group_list: list) -> "Puzzle":
         """Create a new Puzzle instance along with its associated Groups and Words."""
         _words = lambda words: [Word(text=word) for word in words]
         groups = [
             Group(
-                title=group.title,
-                words=_words(group.words),
+                title=group["title"],
+                words=_words(group["words"]),
             )
-            for group in data.groups
+            for group in group_list
         ]
 
         puzzle = cls(groups=groups)

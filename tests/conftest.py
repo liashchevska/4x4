@@ -52,9 +52,6 @@ def client(engine):
 
 @pytest.fixture
 def puzzle(session):
-    puzzle = Puzzle.create(
-        session,
-        data=PuzzleCreate(groups=PUZZLE_PAYLOAD_VALID["groups"]),
-    )
+    puzzle = Puzzle.create(session, group_list=PUZZLE_PAYLOAD_VALID["groups"])
     session.commit()
     return puzzle
