@@ -17,5 +17,5 @@ def create_puzzle(payload: PuzzleCreate, session: SessionDependency) -> PuzzleCr
 
 
 @router.get(path="/{puzzle_id}", response_model=PuzzleRead)
-def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency) -> PuzzleRead:
+def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency):
     return retrieve_puzzle_service(session, puzzle_id)
