@@ -5,10 +5,13 @@ from uuid import UUID
 from app.utils import is_unique
 
 
-class GroupCreate(BaseModel):
+class GroupBase(BaseModel):
     title: str
-    # Each group has 4 words.
     words: Annotated[list[str], Field(min_length=4, max_length=4)]
+
+
+class GroupCreate(GroupBase):
+    pass
 
 
 class PuzzleCreate(BaseModel):
