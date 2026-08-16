@@ -33,3 +33,55 @@ def test_retrieve_puzzle_invalid_id(client):
     response = client.get(f"/puzzles/{non_existent_id}")
 
     assert response.status_code == 404
+
+
+def test_guess_correct_guess(client, puzzle):
+    group = puzzle.groups[0]
+    guess = {"words": group.word_ids}
+    response = client.post(f"/puzzles/{puzzle.id}/guess", json=guess)
+
+    assert response.status_code == 200
+
+    actual = response.json()
+    expected = {
+        "group": {"title": group.title, "words": group.word_ids},
+        "correct": True,
+        "oneaway": False,
+    }
+
+    assert actual == expected
+
+
+def test_guess_oneaway_guess(client, puzzle):
+    group = puzzle.groups[0]
+    guess = {"words": group.word_ids}
+    guess["words"][0] = -1
+
+    response = client.post(f"/puzzles/{puzzle.id}/guess", json=guess)
+
+    assert response.status_code == 200
+
+    actual = response.json()
+    expected = {
+        "group": None,
+        "correct": False,
+        "oneaway": True,
+    }
+
+    assert actual == expected
+
+
+def test_guess_incorrect_guess(client, puzzle):
+    guess = {"words": [-1] * 4}
+    response = client.post(f"/puzzles/{puzzle.id}/guess", json=guess)
+
+    assert response.status_code == 200
+
+    actual = response.json()
+    expected = {
+        "group": None,
+        "correct": False,
+        "oneaway": False,
+    }
+
+    assert actual == expected

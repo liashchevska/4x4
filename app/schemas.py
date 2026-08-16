@@ -54,3 +54,20 @@ class PuzzleOut(BaseModel):
 class PuzzleRead(BaseModel):
     id: UUID
     words: list[WordRead]
+
+
+class GuessIn(BaseModel):
+    words: Annotated[list[int], Field(min_length=4, max_length=4)]
+
+
+class GuessOut(BaseModel):
+    status: GuessResult = Field(exclude=True)
+    group: GroupOut | None = None
+
+    @computed_field
+    def correct(self) -> bool:
+        return self.status == GuessResult.CORRECT
+
+    @computed_field
+    def oneaway(self) -> bool:
+        return self.status == GuessResult.ONEAWAY

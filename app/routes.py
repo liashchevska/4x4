@@ -1,12 +1,5 @@
 from fastapi import APIRouter
-from app.schemas import (
-    PuzzleIn,
-    PuzzleOut,
-    PuzzleRead,
-    GuessIn,
-    GuessOut,
-    GroupBase
-)
+from app.schemas import PuzzleIn, PuzzleOut, PuzzleRead, GuessIn, GuessOut, GroupOut
 from app.dependencies import SessionDependency
 from uuid import UUID
 from app.services import create_puzzle_service, retrieve_puzzle_service
@@ -23,3 +16,13 @@ def create_puzzle(payload: PuzzleIn, session: SessionDependency) -> PuzzleOut: #
 @router.get(path="/{puzzle_id}", response_model=PuzzleRead)
 def retrieve_puzzle(puzzle_id: UUID, session: SessionDependency):
     return retrieve_puzzle_service(session, puzzle_id)
+
+
+@router.post("/{puzzle_id}/guess")
+def guess_group(puzzle_id: UUID, payload: GuessIn, session: SessionDependency) -> GuessOut: # fmt: skip
+    puzzle = retrieve_puzzle_service(session, puzzle_id)
+    status, group = puzzle.guess(payload.words)
+    return GuessOut(
+        status=status,
+        group=GroupOut(title=group.title, words=group.word_ids) if group else None,
+    )
