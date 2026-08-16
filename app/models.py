@@ -73,9 +73,12 @@ class Group(Base):
         back_populates="group", cascade="all, delete-orphan"
     )
 
+    @property
+    def word_ids(self):
+        return [word.id for word in self.words]
+
     def guess(self, guess: list[int]) -> GuessResult:
-        ingroup = {word.id for word in self.words}
-        matched = len(ingroup & set(guess))
+        matched = len(set(self.word_ids) & set(guess))
         return GuessResult(matched)
 
 
