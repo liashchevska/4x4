@@ -1,7 +1,6 @@
 import pytest
 from sqlalchemy import select, func
 from app.models import Group, Puzzle, Word, GuessResult
-from app.schemas import PuzzleCreate
 from tests.factories import make_puzzle
 
 
