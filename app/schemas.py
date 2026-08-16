@@ -1,21 +1,38 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, computed_field, ConfigDict
 from typing_extensions import Annotated, Self
 from uuid import UUID
-
 from app.utils import is_unique
+from app.models import GuessResult
+
+# In   -> data coming into a write endpoint
+# Out  -> data returned from a write endpoint
+# Read -> data returned from a read endpoint
 
 
-class GroupBase(BaseModel):
+class WordRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    text: str
+
+
+class GroupBase[T](BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     title: str
-    words: Annotated[list[str], Field(min_length=4, max_length=4)]
+    words: Annotated[list[T], Field(min_length=4, max_length=4)]
 
 
-class GroupCreate(GroupBase):
+class GroupIn(GroupBase[str]):
     pass
 
 
-class PuzzleCreate(BaseModel):
-    groups: Annotated[list[GroupCreate], Field(min_length=4, max_length=4)]
+class GroupOut(GroupBase[int]):
+    pass
+
+
+class PuzzleIn(BaseModel):
+    groups: Annotated[list[GroupIn], Field(min_length=4, max_length=4)]
 
     @model_validator(mode="after")
     def validate_title_uniqueness(self) -> Self:
@@ -30,13 +47,8 @@ class PuzzleCreate(BaseModel):
         return self
 
 
-class PuzzleCreateResponse(BaseModel):
+class PuzzleOut(BaseModel):
     id: UUID
-
-
-class WordRead(BaseModel):
-    id: int
-    text: str
 
 
 class PuzzleRead(BaseModel):

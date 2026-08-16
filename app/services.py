@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session, selectinload
 from app.models import Puzzle, Group
-from app.schemas import PuzzleCreate
+from app.schemas import PuzzleIn
 from uuid import UUID
 from sqlalchemy import select
 from app.exceptions import PuzzleDoesNotExist
 
-def create_puzzle_service(session: Session, payload: PuzzleCreate) -> Puzzle:
+def create_puzzle_service(session: Session, payload: PuzzleIn) -> Puzzle:
     puzzle = Puzzle.create(session, group_list=payload.model_dump()["groups"])
     session.commit()
     session.refresh(puzzle)
