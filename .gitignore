@@ -27,3 +27,5 @@ wheels/
 .coverage.*
 coverage.xml
 htmlcov/
+
+.mypy_cache/
