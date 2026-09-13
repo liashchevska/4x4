@@ -18,14 +18,36 @@ wheels/
 .env*
 !.env.template
 
-# IDEs
-.vscode/
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
-# pytest & coverage
+# pytest & coverage & mypy
 .pytest_cache/
+.mypy_cache/
 .coverage
 .coverage.*
 coverage.xml
 htmlcov/
 
-.mypy_cache/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node.js
+node_modules
+dist
+dist-ssr
+*.local
