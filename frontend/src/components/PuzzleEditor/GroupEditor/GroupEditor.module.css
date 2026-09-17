@@ -1,0 +1,10 @@
+.group {
+  font-style: italic;
+  width: max-content;
+}
+.groupTitle {
+  font-weight: bold;
+}
+.wordList {
+  font-weight: bold;
+}
