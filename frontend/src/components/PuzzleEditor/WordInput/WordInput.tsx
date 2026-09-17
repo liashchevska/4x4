@@ -8,6 +8,7 @@ type WordInputProps = {
 export function WordInput({ text, onTextChange }: WordInputProps) {
   return (
     <input
+      aria-labelledby="words-list"
       className={styles.input}
       type="text"
       value={text}
