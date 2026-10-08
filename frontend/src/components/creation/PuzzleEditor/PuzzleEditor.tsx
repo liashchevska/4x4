@@ -1,12 +1,13 @@
 import { useState } from "react";
-import type { Group } from "@/types";
+import { type PuzzleValidationResult, type Group } from "@/types";
 import { GroupEditor } from "../GroupEditor";
+import { createEmptyGroups, validateGroups, validatePuzzle } from "@/utils";
+
 import styles from "./PuzzleEditor.module.css";
 
 export function PuzzleEditor() {
-  const [groups, setGroups] = useState<Group[]>(
-    Array.from({ length: 4 }, () => ({ title: "", words: ["", "", "", ""] }))
-  );
+  const [groups, setGroups] = useState(createEmptyGroups());
+  const [validationResult, setValidationResult] = useState<PuzzleValidationResult>();
 
   const handleTitleChange = (groupIndex: number, value: string) => {
     setGroups((current) =>
@@ -27,8 +28,12 @@ export function PuzzleEditor() {
   };
 
   const createPuzzle = () => {
-    console.log(groups);
-    return;
+    const result = validatePuzzle(groups);
+    setValidationResult(result);
+    if (!result.isValid) {
+      return;
+    }
+    // api call.
   };
 
   return (

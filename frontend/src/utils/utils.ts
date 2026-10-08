@@ -1,9 +1,28 @@
 import type { Group, GroupEmptyFlags } from "../types";
+function createEmptyGroups(options?: {
+  groupsPerPuzzle?: number;
+  wordsPerGroup?: number;
+  defaultValue?: string;
+}): Group[];
 
-function createEmptyGroups(groupsPerPuzzle = 4, wordsPerGroup = 4): Group[] {
+function createEmptyGroups(options: {
+  groupsPerPuzzle?: number;
+  wordsPerGroup?: number;
+  defaultValue: boolean;
+}): GroupEmptyFlags[];
+
+function createEmptyGroups({
+  groupsPerPuzzle = 4,
+  wordsPerGroup = 4,
+  defaultValue = "",
+}: {
+  groupsPerPuzzle?: number;
+  wordsPerGroup?: number;
+  defaultValue?: string | boolean;
+} = {}) {
   return Array.from({ length: groupsPerPuzzle }, () => ({
-    title: "",
-    words: Array.from({ length: wordsPerGroup }, () => ""),
+    title: defaultValue,
+    words: Array.from({ length: wordsPerGroup }, () => defaultValue),
   }));
 }
 
