@@ -4,6 +4,7 @@ import { GroupEditor } from "../GroupEditor";
 import { createEmptyGroups, validateGroups, validatePuzzle } from "@/utils";
 
 import styles from "./PuzzleEditor.module.css";
+import { ValidationErrors } from "./ValidationErrors";
 
 export function PuzzleEditor() {
   const [groups, setGroups] = useState(createEmptyGroups());
@@ -51,6 +52,9 @@ export function PuzzleEditor() {
         ))}
         <button type="submit">Create a puzzle</button>
       </form>
+      {validationResult && !validationResult.isValid && (
+        <ValidationErrors result={validationResult} />
+      )}
     </>
   );
 }
