@@ -87,6 +87,7 @@ function validatePuzzle(groups: Group[]) {
     isValid: !hasEmptyFields && !duplicateWords && !duplicateTitles,
     hasDuplicateWords: duplicateWords,
     hasDuplicateTitles: duplicateTitles,
+    hasEmptyFields: hasEmptyFields,
     emptyFields,
   };
 }

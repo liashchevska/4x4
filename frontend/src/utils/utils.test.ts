@@ -68,6 +68,7 @@ describe("puzzle validation", () => {
       isValid: true,
       hasDuplicateWords: false,
       hasDuplicateTitles: false,
+      hasEmptyFields: false,
       emptyFields: [
         { title: false, words: [false, false, false, false] },
         { title: false, words: [false, false, false, false] },
@@ -88,6 +89,7 @@ describe("puzzle validation", () => {
       isValid: false,
       hasDuplicateWords: true,
       hasDuplicateTitles: false,
+      hasEmptyFields: true,
       emptyFields: [
         { title: false, words: [false, false, true, false] },
         { title: true, words: [false, false, false, false] },

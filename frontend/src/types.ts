@@ -12,5 +12,6 @@ export type PuzzleValidationResult = {
   isValid: boolean;
   hasDuplicateTitles: boolean;
   hasDuplicateWords: boolean;
+  hasEmptyFields: boolean;
   emptyFields: GroupEmptyFlags[];
 };
