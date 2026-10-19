@@ -5,6 +5,7 @@ import { createEmptyGroups, validateGroups, validatePuzzle } from "@/utils";
 
 import styles from "./PuzzleEditor.module.css";
 import { ValidationErrors } from "./ValidationErrors";
+import puzzles from "@/services/puzzleService";
 
 export function PuzzleEditor() {
   const [groups, setGroups] = useState(createEmptyGroups());
@@ -28,13 +29,20 @@ export function PuzzleEditor() {
     );
   };
 
-  const createPuzzle = () => {
+  const createPuzzle = async () => {
     const result = validatePuzzle(groups);
     setValidationResult(result);
     if (!result.isValid) {
       return;
     }
-    // api call.
+    try {
+      const response = await puzzles.create(groups);
+      const puzzleId = response.data.id;
+      // handle id in a link
+    } catch (e) {
+      // handle server errors
+      console.log(e);
+    }
   };
 
   return (
