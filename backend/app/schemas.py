@@ -35,15 +35,23 @@ class PuzzleIn(BaseModel):
     groups: Annotated[list[GroupIn], Field(min_length=4, max_length=4)]
 
     @model_validator(mode="after")
+    def validate_presence(self) -> Self:
+        _titles = all(group.title for group in self.groups)
+        _words = all(word for group in self.groups for word in group.words)
+        if not _titles or not _words:
+            raise ValueError("All fields must be filled in")
+        return self
+
+    @model_validator(mode="after")
     def validate_title_uniqueness(self) -> Self:
         if not is_unique([group.title for group in self.groups]):
-            raise ValueError("Group titles must be unique.")
+            raise ValueError("Group titles must be unique")
         return self
 
     @model_validator(mode="after")
     def validate_word_uniqueness(self) -> Self:
         if not is_unique([word for group in self.groups for word in group.words]):
-            raise ValueError("Words must be unique across all groups.")
+            raise ValueError("Words must be unique across all groups")
         return self
 
 

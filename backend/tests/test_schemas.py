@@ -20,6 +20,15 @@ def test_puzzle_accepts_four_groups():
     assert len(puzzle.groups) == 4
 
 
+def test_puzzle_rejects_empty_fields():
+    """All titles and words must be filled."""
+    with pytest.raises(ValidationError, match="must be filled"):
+        temp = make_puzzle(4, 4)
+        temp[0]["title"] = ""
+        temp[0]["words"][0] = ""
+        PuzzleIn(groups=temp)
+
+
 def test_puzzle_rejects_non_unique_words():
     """Words must be unique across the puzzle."""
     with pytest.raises(ValidationError, match="Words must be unique"):
