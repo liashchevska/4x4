@@ -39,7 +39,7 @@ export function PuzzleEditor() {
     const result = validatePuzzle(groups);
     setValidationResult(result);
     if (!result.isValid) {
-      // return;
+      return;
     }
     try {
       const response = await puzzles.create(groups);
