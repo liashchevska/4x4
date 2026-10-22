@@ -6,10 +6,12 @@ import { createEmptyGroups, validateGroups, validatePuzzle } from "@/utils";
 import styles from "./PuzzleEditor.module.css";
 import { ValidationErrors } from "./ValidationErrors";
 import puzzles from "@/services/puzzleService";
+import axios from "axios";
 
 export function PuzzleEditor() {
   const [groups, setGroups] = useState(createEmptyGroups());
   const [validationResult, setValidationResult] = useState<PuzzleValidationResult>();
+  const [serverValidation, setServerValidation] = useState<string[]>();
 
   const handleTitleChange = (groupIndex: number, value: string) => {
     setGroups((current) =>
@@ -30,18 +32,29 @@ export function PuzzleEditor() {
   };
 
   const createPuzzle = async () => {
+    // reset previous errors
+    setServerValidation(undefined);
+    setValidationResult(undefined);
+
     const result = validatePuzzle(groups);
     setValidationResult(result);
     if (!result.isValid) {
-      return;
+      // return;
     }
     try {
       const response = await puzzles.create(groups);
       const puzzleId = response.data.id;
       // handle id in a link
+  
     } catch (e) {
-      // handle server errors
-      console.log(e);
+      if (axios.isAxiosError(e)) {
+        if (e.response?.status === 422) {
+          const detail = e.response.data?.detail;
+          if (Array.isArray(detail)) {
+            setServerValidation(detail.map((item) => item.msg));
+          }
+        }
+      }
     }
   };
 
@@ -61,7 +74,10 @@ export function PuzzleEditor() {
         <button type="submit">Create a puzzle</button>
       </form>
       {validationResult && !validationResult.isValid && (
-        <ValidationErrors result={validationResult} />
+        <ValidationErrors
+          result={validationResult}
+          serverValidation={serverValidation}
+        />
       )}
     </>
   );
