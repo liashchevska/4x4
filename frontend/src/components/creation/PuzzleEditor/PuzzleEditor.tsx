@@ -12,6 +12,7 @@ export function PuzzleEditor() {
   const [groups, setGroups] = useState(createEmptyGroups());
   const [validationResult, setValidationResult] = useState<PuzzleValidationResult>();
   const [serverValidation, setServerValidation] = useState<string[]>();
+  const [puzzleId, setPuzzleId] = useState<string>();
 
   const handleTitleChange = (groupIndex: number, value: string) => {
     setGroups((current) =>
@@ -43,9 +44,7 @@ export function PuzzleEditor() {
     }
     try {
       const response = await puzzles.create(groups);
-      const puzzleId = response.data.id;
-      // handle id in a link
-  
+      setPuzzleId(response.data.id);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.response?.status === 422) {
@@ -58,6 +57,10 @@ export function PuzzleEditor() {
     }
   };
 
+  if (puzzleId) {
+    // copy on click / go to link
+    return <p>created puzzle id: {puzzleId}</p>;
+  }
   return (
     <>
       <form action={createPuzzle}>
