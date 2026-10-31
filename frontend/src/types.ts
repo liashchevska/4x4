@@ -15,3 +15,8 @@ export type PuzzleValidationResult = {
   hasEmptyFields: boolean;
   emptyFields: GroupEmptyFlags[];
 };
+
+export type Word = {
+  id: string;
+  text: string;
+};

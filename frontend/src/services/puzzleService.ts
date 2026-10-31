@@ -3,9 +3,11 @@ import apiClient from "./apiClient";
 
 const puzzles = {
   create(groups: Group[]) {
-    return apiClient.post("puzzles/", { groups });
+    return apiClient.post("/puzzles/", { groups });
   },
-  // get() {},
+  get(id: string) {
+    return apiClient.get(`/puzzles/${id}`);
+  },
   // makeGuess() {},
 };
 
