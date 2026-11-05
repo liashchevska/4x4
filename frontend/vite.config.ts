@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import react, { reactCompilerPreset } from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import { defineConfig } from "vite";
@@ -16,5 +18,11 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: ["./vitest.setup.ts"],
+    css: true,
   },
 });
