@@ -1,4 +1,4 @@
-import type { Group } from "@/types";
+import type { Group, Word } from "@/types";
 import apiClient from "./apiClient";
 
 const puzzles = {
@@ -8,7 +8,9 @@ const puzzles = {
   get(id: string) {
     return apiClient.get(`/puzzles/${id}`);
   },
-  // makeGuess() {},
+  guessGroup(id: string, selectedIds: Set<string>) {
+    return apiClient.post(`/puzzles/${id}/guess`, { words: [...selectedIds] });
+  },
 };
 
 export default puzzles;
