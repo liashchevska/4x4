@@ -2,20 +2,23 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Grid } from "./Grid";
 import type { Word } from "@/types";
+import { GROUP_SIZE } from "@/constants";
 
 const words: Word[] = [
   { id: "1", text: "Cat" },
   { id: "2", text: "Dog" },
   { id: "3", text: "Fox" },
+  { id: "4", text: "Pig" },
+  { id: "5", text: "Bream" },
 ];
 
 const onSelectionChange = vi.fn();
 
-const renderGrid = (words: Word[], selectedWords: Word[] = []) => {
+const renderGrid = (words: Word[], selectedIds: Set<string> = new Set()) => {
   render(
     <Grid
       words={words}
-      selectedWords={selectedWords}
+      selectedIds={selectedIds}
       onSelectionChange={onSelectionChange}
     />
   );
@@ -40,20 +43,30 @@ describe("Grid", () => {
     const user = userEvent.setup();
     await user.click(screen.getByText(words[0].text));
 
-    expect(onSelectionChange).toHaveBeenCalledWith([words[0]]);
+    expect(onSelectionChange).toHaveBeenCalledWith(new Set([words[0].id]));
   });
 
   it("calls onSelectionChange with the updated selection when deselecting a word", async () => {
-    renderGrid(words, [words[0]]);
+    renderGrid(words, new Set([words[0].id]));
 
     const user = userEvent.setup();
     await user.click(screen.getByText(words[0].text));
 
-    expect(onSelectionChange).toHaveBeenCalledWith([]);
+    expect(onSelectionChange).toHaveBeenCalledWith(new Set());
+  });
+
+  it("does not allow selecting more than GROUP_SIZE items", async () => {
+    const ids = words.map((item) => item.id);
+    renderGrid(words, new Set(ids.slice(0, GROUP_SIZE)));
+
+    const user = userEvent.setup();
+    await user.click(screen.getByText(words[GROUP_SIZE].text));
+
+    expect(onSelectionChange).not.toHaveBeenCalled();
   });
 
   it("sets aria-pressed according to selection state", () => {
-    renderGrid(words, [words[0]]);
+    renderGrid(words, new Set([words[0].id]));
     expect(screen.getByRole("button", { name: words[0].text })).toHaveAttribute(
       "aria-pressed",
       "true"

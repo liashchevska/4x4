@@ -1,24 +1,20 @@
+import { GROUP_SIZE } from "@/constants";
 import type { Word } from "@/types";
-import { useMemo } from "react";
 
 type GridProps = {
   words: Word[];
-  selectedWords: Word[];
-  onSelectionChange: (updatedWords: Word[]) => void;
+  selectedIds: Set<string>;
+  onSelectionChange: (updatedIds: Set<string>) => void;
 };
 
-export function Grid({ words, selectedWords, onSelectionChange }: GridProps) {
-  const selectedIds = useMemo(
-    () => new Set(selectedWords.map((word) => word.id)),
-    [selectedWords]
-  );
-
+export function Grid({ words, selectedIds, onSelectionChange }: GridProps) {
   const toggleWord = (word: Word) => {
-    const isSelected = selectedWords.some((x) => x.id === word.id);
-    const nextSelectedWords = isSelected
-      ? selectedWords.filter((x) => x.id !== word.id)
-      : [...selectedWords, word];
-    onSelectionChange(nextSelectedWords);
+    const selectedList = selectedIds.has(word.id)
+      ? [...selectedIds].filter((id) => id !== word.id)
+      : [...selectedIds, word.id];
+
+    if (selectedList.length > GROUP_SIZE) return;
+    onSelectionChange(new Set(selectedList));
   };
 
   return (
