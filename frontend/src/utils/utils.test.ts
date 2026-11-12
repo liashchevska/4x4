@@ -1,4 +1,5 @@
 import {
+  areSetsEqual,
   hasDuplicateTitles,
   hasDuplicateWords,
   validateGroups,
@@ -94,5 +95,16 @@ describe("puzzle validation", () => {
         { title: true, words: [false, false, false, false] },
       ],
     });
+  });
+});
+
+describe("areSetsEqual", () => {
+  it("compares sets regardless of order", () => {
+    expect(areSetsEqual(new Set(["a", "b"]), new Set(["b", "a"]))).toBe(true);
+    expect(areSetsEqual(new Set(["a", "b"]), new Set(["a", "c"]))).toBe(false);
+  });
+
+  it("returns false for sets of different sizes", () => {
+    expect(areSetsEqual(new Set(["a"]), new Set(["a", "b"]))).toBe(false);
   });
 });

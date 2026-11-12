@@ -92,10 +92,15 @@ function validatePuzzle(groups: Group[]) {
   };
 }
 
+function areSetsEqual(a: Set<string>, b: Set<string>): boolean {
+  return a.size === b.size && [...a].every((item) => b.has(item));
+}
+
 export {
   createEmptyGroups,
   validateGroups,
   hasDuplicateWords,
   hasDuplicateTitles,
   validatePuzzle,
+  areSetsEqual,
 };
