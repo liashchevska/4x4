@@ -2,15 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Grid } from "./Grid";
 import type { Word } from "@/types";
-import { GROUP_SIZE } from "@/constants";
-
-const words: Word[] = [
-  { id: "1", text: "Cat" },
-  { id: "2", text: "Dog" },
-  { id: "3", text: "Fox" },
-  { id: "4", text: "Pig" },
-  { id: "5", text: "Bream" },
-];
+import { GROUP_SIZE, words } from "@/constants";
 
 const onSelectionChange = vi.fn();
 
