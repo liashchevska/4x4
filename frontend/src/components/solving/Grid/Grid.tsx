@@ -1,5 +1,6 @@
 import { GROUP_SIZE } from "@/constants";
 import type { Word } from "@/types";
+import styles from "./Grid.module.css";
 
 type GridProps = {
   words: Word[];
@@ -20,15 +21,20 @@ export function Grid({ words, selectedIds, onSelectionChange }: GridProps) {
   return (
     <>
       <div role="group">
-        {words.map((word) => (
-          <button
-            key={word.id}
-            onClick={() => toggleWord(word)}
-            aria-pressed={selectedIds.has(word.id)}
-          >
-            {word.text}
-          </button>
-        ))}
+        {words.map((word) => {
+          const isSelected = selectedIds.has(word.id);
+
+          return (
+            <button
+              className={isSelected ? styles.selected : ""}
+              key={word.id}
+              onClick={() => toggleWord(word)}
+              aria-pressed={isSelected}
+            >
+              {word.text}
+            </button>
+          );
+        })}
       </div>
     </>
   );
