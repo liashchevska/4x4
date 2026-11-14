@@ -1,4 +1,4 @@
-import type { Word } from "./types";
+import type { GuessedGroup, Word } from "./types";
 
 export const GROUP_SIZE = 4;
 // [add] error messages
@@ -11,3 +11,9 @@ export const words: Word[] = [
   { id: "4", text: "Pig" },
   { id: "5", text: "Bream" },
 ];
+
+export const group: GuessedGroup = {
+  title: "Animals",
+  //   words.map((item) => item.id).slice(0, 4)
+  words: new Set(["1", "2", "3", "4"]),
+};

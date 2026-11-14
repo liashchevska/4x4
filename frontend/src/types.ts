@@ -20,3 +20,8 @@ export type Word = {
   id: string;
   text: string;
 };
+
+export type GuessedGroup = {
+  title: string;
+  words: Set<string>;
+};
