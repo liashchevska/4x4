@@ -43,6 +43,37 @@ describe("PuzzleView", () => {
     expect(submit).toBeEnabled();
   });
 
+  it("disables submit and displays a message for an already guessed combination", async () => {
+    vi.mocked(puzzles.guessGroup, { partial: true }).mockResolvedValue({
+      data: { correct: false },
+    });
+
+    const user = userEvent.setup();
+    render(<PuzzleView />);
+
+    const submit = screen.getByRole("button", { name: /submit/i });
+    const selectedWords = words.slice(0, GROUP_SIZE);
+
+    for (const word of selectedWords) {
+      await user.click(await screen.findByRole("button", { name: word.text }));
+    }
+
+    await user.click(submit);
+
+    for (const word of selectedWords) {
+      await user.click(screen.getByRole("button", { name: word.text }));
+    }
+
+    for (const word of selectedWords) {
+      await user.click(screen.getByRole("button", { name: word.text }));
+    }
+
+    expect(submit).toBeDisabled();
+    expect(screen.getByText(/already/i)).toBeInTheDocument();
+
+    expect(puzzles.guessGroup).toHaveBeenCalledOnce();
+  });
+
   it("does not call API if currently selected are already guessed", async () => {
     const user = userEvent.setup();
     render(<PuzzleView />);

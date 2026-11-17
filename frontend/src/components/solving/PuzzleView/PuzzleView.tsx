@@ -41,6 +41,8 @@ export function PuzzleView() {
     return words.filter(({ id }) => !alreadyGuessedIds.has(id));
   }, [words, correctlyGuessed]);
 
+  // const isGaveOver = useMemo(() => {}, [mistakeCount, remainingWords]);
+
   const guessGroup = async () => {
     if (guessHistory.some((guess) => areSetsEqual(guess, selectedIds))) {
       console.log("Already guessed!"); // [add] display message
@@ -61,6 +63,7 @@ export function PuzzleView() {
     }
   };
 
+  const alreadyGuessed = guessHistory.some((item) => areSetsEqual(item, selectedIds));
   return (
     <>
       <Grid
@@ -68,10 +71,10 @@ export function PuzzleView() {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
       />
-      {/* [add] disable if in guess history */}
-      <button disabled={selectedIds.size !== 4} onClick={guessGroup}>
+      <button disabled={selectedIds.size !== 4 || alreadyGuessed} onClick={guessGroup}>
         submit
       </button>
+      {alreadyGuessed && <p>Already guessed!</p>}
     </>
   );
 }
