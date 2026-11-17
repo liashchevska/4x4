@@ -7,6 +7,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PuzzleView } from "./PuzzleView";
 import { serialize } from "@/hooks/useLocalStorage";
+import type { Word } from "@/types";
 
 vi.mock("@/services/puzzleService", () => ({
   default: {
@@ -25,21 +26,34 @@ beforeEach(() => {
   vi.mocked(puzzles.get, { partial: true }).mockResolvedValue({ data: { words } });
 });
 
-describe("PuzzleView", () => {
-  it("enables guess button only when 4 words are selected", async () => {
-    const user = userEvent.setup();
-    render(<PuzzleView />);
+function setup() {
+  render(<PuzzleView />);
+  const user = userEvent.setup();
+  const submit = screen.getByRole("button", { name: /submit/i });
 
-    const submit = screen.getByRole("button", { name: /submit/i });
-
-    expect(submit).toBeDisabled();
-    for (const word of words.slice(0, GROUP_SIZE - 1)) {
+  const selectWords = async (wordsToSelect: Word[]) => {
+    for (const word of wordsToSelect) {
       await user.click(await screen.findByRole("button", { name: word.text }));
     }
+  };
+
+  const submitGuess = async (wordsToSelect: Word[]) => {
+    await selectWords(wordsToSelect);
+    await user.click(submit);
+  };
+
+  return { user, submit, selectWords, submitGuess };
+}
+
+describe("PuzzleView", () => {
+  it("enables guess button only when 4 words are selected", async () => {
+    const { submit, selectWords } = setup();
     expect(submit).toBeDisabled();
-    await user.click(
-      await screen.findByRole("button", { name: words[GROUP_SIZE].text })
-    );
+
+    await selectWords(words.slice(0, GROUP_SIZE - 1));
+    expect(submit).toBeDisabled();
+
+    await selectWords(words.slice(GROUP_SIZE - 1, GROUP_SIZE));
     expect(submit).toBeEnabled();
   });
 
@@ -48,25 +62,13 @@ describe("PuzzleView", () => {
       data: { correct: false },
     });
 
-    const user = userEvent.setup();
-    render(<PuzzleView />);
+    const { submit, selectWords, submitGuess } = setup();
+    const wordsInAGuess = words.slice(0, GROUP_SIZE);
+    await submitGuess(wordsInAGuess);
 
-    const submit = screen.getByRole("button", { name: /submit/i });
-    const selectedWords = words.slice(0, GROUP_SIZE);
-
-    for (const word of selectedWords) {
-      await user.click(await screen.findByRole("button", { name: word.text }));
-    }
-
-    await user.click(submit);
-
-    for (const word of selectedWords) {
-      await user.click(screen.getByRole("button", { name: word.text }));
-    }
-
-    for (const word of selectedWords) {
-      await user.click(screen.getByRole("button", { name: word.text }));
-    }
+    // [fix & test] clear selected on submit; reselect manually
+    await selectWords(wordsInAGuess);
+    await selectWords(wordsInAGuess);
 
     expect(submit).toBeDisabled();
     expect(screen.getByText(/already/i)).toBeInTheDocument();
@@ -75,14 +77,14 @@ describe("PuzzleView", () => {
   });
 
   it("does not call API if currently selected are already guessed", async () => {
-    const user = userEvent.setup();
-    render(<PuzzleView />);
+    // [fix & test] clear selected on submit; reselect manually
+    vi.mocked(puzzles.guessGroup, { partial: true }).mockResolvedValue({
+      data: { correct: false },
+    });
 
-    const submit = screen.getByRole("button", { name: /submit/i });
+    const { user, submit, selectWords } = setup();
+    await selectWords(words.slice(0, GROUP_SIZE));
 
-    for (const word of words.slice(0, GROUP_SIZE)) {
-      await user.click(await screen.findByRole("button", { name: word.text }));
-    }
     await user.click(submit);
     expect(puzzles.guessGroup).toHaveBeenCalledOnce();
 
@@ -95,13 +97,9 @@ describe("PuzzleView", () => {
       data: { correct: true, group: group },
     });
 
-    const user = userEvent.setup();
-    render(<PuzzleView />);
+    const { submitGuess } = setup();
+    await submitGuess(words.slice(0, GROUP_SIZE));
 
-    for (const word of words.slice(0, GROUP_SIZE)) {
-      await user.click(await screen.findByRole("button", { name: word.text }));
-    }
-    await user.click(screen.getByRole("button", { name: /submit/i }));
     await waitFor(() => {
       expect(
         screen.queryByRole("button", { name: words[0].text })
@@ -114,20 +112,14 @@ describe("PuzzleView", () => {
   });
 
   it("saves solving progress to local storage", async () => {
-    const user = userEvent.setup();
-    render(<PuzzleView />);
-
-    const submit = screen.getByRole("button", { name: /submit/i });
-    const wordsInGuess = words.slice(0, GROUP_SIZE);
-    for (const word of wordsInGuess) {
-      await user.click(await screen.findByRole("button", { name: word.text }));
-    }
-    await user.click(submit);
+    const { submitGuess } = setup();
+    const wordsInAGuess = words.slice(0, GROUP_SIZE);
+    await submitGuess(wordsInAGuess);
 
     const guessed = localStorage.getItem("guessed");
     expect(guessed).toEqual(serialize([group]));
 
     const history = localStorage.getItem("history");
-    expect(history).toEqual(serialize([new Set(wordsInGuess.map((item) => item.id))]));
+    expect(history).toEqual(serialize([new Set(wordsInAGuess.map((item) => item.id))]));
   });
 });
