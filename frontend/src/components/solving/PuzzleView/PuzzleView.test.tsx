@@ -3,9 +3,10 @@
 
 import { GROUP_SIZE, words, group } from "@/constants";
 import puzzles from "@/services/puzzleService";
-import { queryByRole, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { PuzzleView } from "./PuzzleView";
+import { serialize } from "@/hooks/useLocalStorage";
 
 vi.mock("@/services/puzzleService", () => ({
   default: {
@@ -19,6 +20,7 @@ vi.mock("react-router", () => ({
 }));
 
 beforeEach(() => {
+  localStorage.clear();
   vi.clearAllMocks();
   vi.mocked(puzzles.get, { partial: true }).mockResolvedValue({ data: { words } });
 });
@@ -78,5 +80,23 @@ describe("PuzzleView", () => {
     expect(
       screen.getByRole("button", { name: words.at(-1)!.text })
     ).toBeInTheDocument();
+  });
+
+  it("saves solving progress to local storage", async () => {
+    const user = userEvent.setup();
+    render(<PuzzleView />);
+
+    const submit = screen.getByRole("button", { name: /submit/i });
+    const wordsInGuess = words.slice(0, GROUP_SIZE);
+    for (const word of wordsInGuess) {
+      await user.click(await screen.findByRole("button", { name: word.text }));
+    }
+    await user.click(submit);
+
+    const guessed = localStorage.getItem("guessed");
+    expect(guessed).toEqual(serialize([group]));
+
+    const history = localStorage.getItem("history");
+    expect(history).toEqual(serialize([new Set(wordsInGuess.map((item) => item.id))]));
   });
 });

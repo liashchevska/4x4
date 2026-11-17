@@ -5,14 +5,16 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { Grid } from "../Grid";
 import { areSetsEqual } from "@/utils/utils";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export function PuzzleView() {
   const { id } = useParams();
   const [words, setWords] = useState<Word[]>([]);
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [guessHistory, setGuessHistory] = useState<Set<string>[]>([]);
-  const [correctlyGuessed, setCorrectlyGuessed] = useState<GuessedGroup[]>([]);
+  const [guessHistory, setGuessHistory] = useLocalStorage<Set<string>[]>("history", []);
+  // prettier-ignore
+  const [correctlyGuessed, setCorrectlyGuessed] = useLocalStorage<GuessedGroup[]>("guessed", []);
 
   useEffect(() => {
     if (!id) {
@@ -66,6 +68,7 @@ export function PuzzleView() {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
       />
+      {/* [add] disable if in guess history */}
       <button disabled={selectedIds.size !== 4} onClick={guessGroup}>
         submit
       </button>
